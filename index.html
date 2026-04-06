@@ -18,7 +18,6 @@
             --nav-height: 50px;
         }
 
-        /* Dark Mode Variables */
         body.dark-mode {
             --bg: #111827;
             --surface: #1F2937;
@@ -36,7 +35,6 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        /* Top Navigation Bar */
         #top-bar {
             position: absolute;
             top: 0; left: 0; right: 0;
@@ -71,7 +69,6 @@
             margin-left: auto;
         }
 
-        /* Sidebar */
         #sidebar {
             width: var(--sidebar-width);
             background: var(--surface);
@@ -88,7 +85,7 @@
 
         .sidebar-header { padding: 15px; border-bottom: 1px solid #E5E7EB; }
         .dark-mode .sidebar-header { border-bottom-color: #374151; }
-        
+
         .sidebar-tabs { display: flex; cursor: pointer; }
         .tab { flex: 1; padding: 10px; text-align: center; border-bottom: 2px solid transparent; font-weight: bold; font-size: 14px;}
         .tab.active { border-bottom-color: var(--primary); color: var(--primary); }
@@ -108,8 +105,7 @@
         }
 
         .book-item.active { background: rgba(79, 70, 229, 0.2); color: var(--primary); font-weight: bold; }
-        
-        /* Main Content */
+
         #main-content {
             flex: 1;
             display: flex;
@@ -122,52 +118,50 @@
         #pdf-scroll-container {
             flex: 1; overflow-y: auto; padding: 20px;
             display: flex; flex-direction: column; align-items: center; gap: 20px;
-            scroll-behavior: smooth;
         }
 
         .page-wrapper {
             position: relative; background: white;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
-            width: 800px; height: 1100px; /* Placeholders */
+            width: 800px; height: 1100px;
             display: flex; justify-content: center; align-items: center;
+            flex-shrink: 0;
         }
         .page-wrapper.rendered { width: auto; height: auto; }
-        
-        .dark-mode .page-wrapper canvas { filter: invert(90%) hue-rotate(180deg); } 
+
+        .dark-mode .page-wrapper canvas { filter: invert(90%) hue-rotate(180deg); }
 
         .textLayer { position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0.2; line-height: 1.0; z-index: 2; }
-        ::selection { background: rgba(251, 191, 36, 0.5); } 
+        ::selection { background: rgba(251, 191, 36, 0.5); }
 
-        /* Highlight Elements */
         .pdf-highlight {
             position: absolute;
-            background-color: rgb(253, 224, 71); 
-            mix-blend-mode: multiply; 
-            z-index: 1; 
-            pointer-events: none; 
+            background-color: rgb(253, 224, 71);
+            mix-blend-mode: multiply;
+            z-index: 1;
+            pointer-events: none;
         }
 
         .dark-mode .pdf-highlight {
             background-color: rgba(253, 224, 71, 0.4);
-            mix-blend-mode: normal; 
+            mix-blend-mode: normal;
         }
 
-        /* Tooltips */
         #dictionary-tooltip, #delete-tooltip {
-            position: absolute; background: #111827; color: white;
+            position: fixed; background: #111827; color: white;
             padding: 12px; border-radius: 8px; font-size: 14px;
             max-width: 320px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
             z-index: 1000; display: none;
         }
-        
+
         #delete-tooltip { padding: 8px; }
 
         .word-title { font-weight: bold; font-size: 16px; color: #60A5FA; margin-bottom: 4px; }
         .word-phonetic { font-style: italic; color: #9CA3AF; font-size: 12px; margin-bottom: 8px; }
         .tooltip-actions { margin-top: 10px; display: flex; gap: 5px; flex-wrap: wrap; }
-        
-        .tooltip-btn { 
-            background: #374151; color: white; border: none; padding: 5px 10px; 
+
+        .tooltip-btn {
+            background: #374151; color: white; border: none; padding: 5px 10px;
             border-radius: 4px; cursor: pointer; font-size: 12px; text-decoration: none;
         }
         .tooltip-btn:hover { background: #4B5563; }
@@ -175,57 +169,35 @@
         .tooltip-btn.delete { background: #DC2626; margin: 0; }
         .tooltip-btn.delete:hover { background: #B91C1C; }
 
-        /* Floating Page Controls */
         #page-controls {
             position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            bottom: 20px; left: 50%; transform: translateX(-50%);
             background: rgba(31, 41, 55, 0.9);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            display: none; 
-            align-items: center;
-            gap: 8px;
-            z-index: 30;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            font-size: 14px;
+            color: white; padding: 8px 16px; border-radius: 20px;
+            display: none; align-items: center; gap: 8px;
+            z-index: 30; box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-size: 14px;
         }
 
         #page-input {
-            width: 40px;
-            text-align: center;
+            width: 40px; text-align: center;
             background: rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            border-radius: 4px;
-            padding: 4px;
-            font-size: 14px;
-            outline: none;
+            color: white; border-radius: 4px; padding: 4px; font-size: 14px; outline: none;
         }
-        
-        #page-input:focus { border-color: var(--primary); background: rgba(255,255,255,0.2); }
 
-        /* Remove arrows from number input */
-        #page-input::-webkit-outer-spin-button, #page-input::-webkit-inner-spin-button {
-            -webkit-appearance: none; margin: 0;
-        }
+        #page-input:focus { border-color: var(--primary); background: rgba(255,255,255,0.2); }
+        #page-input::-webkit-outer-spin-button, #page-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         #page-input[type=number] { -moz-appearance: textfield; }
 
-        /* Mobile Responsiveness */
         #menu-toggle { display: none; }
-        
+
         @media (max-width: 768px) {
             #menu-toggle { display: block; }
-            #sidebar { 
-                position: absolute; left: -100%; top: 0; 
-                box-shadow: 5px 0 15px rgba(0,0,0,0.2); 
-            }
+            #sidebar { position: absolute; left: -100%; top: 0; box-shadow: 5px 0 15px rgba(0,0,0,0.2); }
             #sidebar.open { left: 0; }
             .page-wrapper { width: 100% !important; height: auto !important; }
             canvas { max-width: 100%; height: auto !important; }
-            #page-controls { bottom: 10px; } /* Lift slightly on mobile */
+            #page-controls { bottom: 10px; }
         }
     </style>
 </head>
@@ -234,7 +206,6 @@
     <div id="top-bar">
         <button id="menu-toggle" class="icon-btn">☰</button>
         <span style="font-weight: bold;">Smart PDF</span>
-        
         <div id="zoom-controls">
             <button class="icon-btn" id="zoom-out">➖</button>
             <span id="zoom-level">100%</span>
@@ -255,7 +226,6 @@
 
     <div id="main-content">
         <div id="pdf-scroll-container"></div>
-        
         <div id="page-controls">
             <input type="number" id="page-input" value="1" min="1">
             <span>/ <span id="total-pages">0</span></span>
@@ -276,84 +246,138 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
         let db;
-        let currentPdfDoc = null;
-        let currentBookId = null;
-        let scale = 1.0; 
-        let currentTab = 'library';
-        let savedHighlights = []; 
+        let currentPdfDoc   = null;
+        let currentBookId   = null;
+        let scale           = 1.0;
+        let currentTab      = 'library';
+        let savedHighlights = [];
 
-        const scrollContainer = document.getElementById('pdf-scroll-container');
-        const listContainer = document.getElementById('list-container');
-        const tooltip = document.getElementById('dictionary-tooltip');
-        const deleteTooltip = document.getElementById('delete-tooltip');
-        const pageControls = document.getElementById('page-controls');
-        const pageInput = document.getElementById('page-input');
+        let unscaledPageWidth  = 800;
+        let unscaledPageHeight = 1130;
 
-        // Observer for updating current page number
+        // Must match the CSS values on #pdf-scroll-container
+        const SCROLL_GAP = 20;   // gap: 20px
+        const SCROLL_PAD = 20;   // padding: 20px (top)
+
+        const scrollContainer  = document.getElementById('pdf-scroll-container');
+        const listContainer    = document.getElementById('list-container');
+        const tooltip          = document.getElementById('dictionary-tooltip');
+        const deleteTooltip    = document.getElementById('delete-tooltip');
+        const pageControls     = document.getElementById('page-controls');
+        const pageInput        = document.getElementById('page-input');
+
+        let renderObserver    = null;
         let activePageObserver = null;
 
-        // --- UI & RESPONSIVENESS CONTROLS ---
-        document.getElementById('menu-toggle').onclick = () => {
+        // ── PURE-MATH SCROLL HELPERS ────────────────────────────────────────────────
+        //
+        //  Layout of the flex column:
+        //    SCROLL_PAD  ← top padding of container
+        //    [page 1 — height H]
+        //    SCROLL_GAP
+        //    [page 2 — height H]
+        //    SCROLL_GAP  …
+        //
+        //  offsetTop of page N  =  SCROLL_PAD + (N-1)*(H + SCROLL_GAP)
+        //  We want the top of page N at y=SCROLL_PAD inside the viewport, so:
+        //    scrollTop  =  offsetTop − SCROLL_PAD
+        //               =  (N-1) * (H + SCROLL_GAP)
+        //
+        //  No DOM measurement — immune to timing/layout-shift issues.
+
+        function scrollTopForPage(pageNum) {
+            const H = unscaledPageHeight * scale;
+            return (pageNum - 1) * (H + SCROLL_GAP);
+        }
+
+        // ── UI ─────────────────────────────────────────────────────────────────────
+
+        document.getElementById('menu-toggle').onclick = () =>
             document.getElementById('sidebar').classList.toggle('open');
-        };
 
-        document.getElementById('theme-toggle').onclick = () => {
+        document.getElementById('theme-toggle').onclick = () =>
             document.body.classList.toggle('dark-mode');
+
+        // ── DB ─────────────────────────────────────────────────────────────────────
+
+        function saveBookState() {
+            if (!currentBookId) return;
+            const store = db.transaction(['books'], 'readwrite').objectStore('books');
+            store.get(currentBookId).onsuccess = (e) => {
+                const book = e.target.result;
+                if (book) {
+                    book.lastPage   = parseInt(pageInput.value) || 1;
+                    book.scale      = scale;
+                    book.highlights = savedHighlights;
+                    store.put(book);
+                }
+            };
+        }
+
+        const initDB = () => {
+            const req = indexedDB.open('SmartPDFDB', 5);
+            req.onupgradeneeded = (e) => {
+                db = e.target.result;
+                if (!db.objectStoreNames.contains('books'))
+                    db.createObjectStore('books', { keyPath: 'id' });
+            };
+            req.onsuccess = (e) => { db = e.target.result; loadLibraryList(); };
         };
 
-        // --- ZOOM CONTROLS ---
-        const updateZoomDisplay = () => {
+        // ── ZOOM ────────────────────────────────────────────────────────────────────
+        //
+        //  THE FIX lives here.  We:
+        //    1. Snapshot the current page number BEFORE touching the DOM.
+        //    2. Rebuild the DOM (placeholder divs only — no rendering yet).
+        //    3. Inside setTimeout(0) — a fresh macrotask, after the browser has
+        //       fully committed the new layout — we:
+        //         a. Set scrollTop using the pure-math formula (no DOM measurement).
+        //         b. THEN attach IntersectionObservers.
+        //
+        //  Why setTimeout(0) instead of requestAnimationFrame?
+        //    rAF fires inside the current paint cycle.  IntersectionObserver
+        //    callbacks can also fire inside the same cycle, before scrollTop has
+        //    been "seen" by the browser.  setTimeout(0) pushes our code into the
+        //    NEXT task queue entry, so the paint is fully committed first.
+
+        const updateZoomText = () =>
             document.getElementById('zoom-level').innerText = Math.round(scale * 100) + '%';
-            if(currentPdfDoc) {
-                const scrollPos = scrollContainer.scrollTop;
-                scrollContainer.innerHTML = ''; 
-                setupContinuousScroll(currentPdfDoc, scrollPos);
-            }
+
+        const applyZoom = () => {
+            updateZoomText();
+            if (!currentPdfDoc) return;
+            const targetPage = parseInt(pageInput.value) || 1;   // snapshot BEFORE clear
+            scrollContainer.innerHTML = '';
+            setupContinuousScroll(currentPdfDoc, targetPage);
+            saveBookState();
         };
 
-        document.getElementById('zoom-in').onclick = () => { scale += 0.2; updateZoomDisplay(); };
-        document.getElementById('zoom-out').onclick = () => { scale = Math.max(0.6, scale - 0.2); updateZoomDisplay(); };
+        document.getElementById('zoom-in').onclick  = () => { scale += 0.2; applyZoom(); };
+        document.getElementById('zoom-out').onclick = () => { scale = Math.max(0.4, scale - 0.2); applyZoom(); };
 
-        // --- PAGE NAVIGATOR LOGIC ---
+        // ── PAGE NAVIGATOR ─────────────────────────────────────────────────────────
+
         pageInput.addEventListener('change', (e) => {
-            if(!currentPdfDoc) return;
-            let targetPage = parseInt(e.target.value);
-            const totalPages = currentPdfDoc.numPages;
-            
-            // Constrain input
-            if (targetPage < 1) targetPage = 1;
-            if (targetPage > totalPages) targetPage = totalPages;
-            e.target.value = targetPage;
-
-            // Scroll to specific page
-            const targetWrapper = document.querySelector(`.page-wrapper[data-page-number="${targetPage}"]`);
-            if (targetWrapper) {
-                targetWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+            if (!currentPdfDoc) return;
+            let p = parseInt(e.target.value);
+            if (isNaN(p) || p < 1) p = 1;
+            if (p > currentPdfDoc.numPages) p = currentPdfDoc.numPages;
+            e.target.value = p;
+            scrollContainer.scrollTop = scrollTopForPage(p);
         });
 
-        // --- DATABASE SETUP ---
-        const initDB = () => {
-            const request = indexedDB.open("SmartPDFDB", 4); 
-            request.onupgradeneeded = (e) => {
-                db = e.target.result;
-                if (!db.objectStoreNames.contains("books")) db.createObjectStore("books", { keyPath: "id" });
-            };
-            request.onsuccess = (e) => {
-                db = e.target.result;
-                loadLibraryList();
-            };
-        };
+        // ── LIBRARY ────────────────────────────────────────────────────────────────
 
-        // --- FILE UPLOAD & RENDERING ---
-        document.getElementById('file-upload').addEventListener('change', function(e) {
+        document.getElementById('file-upload').addEventListener('change', function (e) {
             const file = e.target.files[0];
             if (!file || file.type !== 'application/pdf') return;
             const reader = new FileReader();
-            reader.onload = function() {
-                const newBook = { id: Date.now().toString(), name: file.name, data: this.result, lastScroll: 0, highlights: [] };
-                const transaction = db.transaction(["books"], "readwrite");
-                transaction.objectStore("books").add(newBook).onsuccess = () => {
+            reader.onload = function () {
+                const newBook = {
+                    id: Date.now().toString(), name: file.name,
+                    data: this.result, lastPage: 1, scale: 1.0, highlights: []
+                };
+                db.transaction(['books'], 'readwrite').objectStore('books').add(newBook).onsuccess = () => {
                     loadLibraryList(); openBook(newBook.id);
                 };
             };
@@ -363,11 +387,11 @@
         const loadLibraryList = () => {
             if (currentTab !== 'library') return;
             listContainer.innerHTML = '';
-            db.transaction(["books"], "readonly").objectStore("books").getAll().onsuccess = (e) => {
+            db.transaction(['books'], 'readonly').objectStore('books').getAll().onsuccess = (e) => {
                 e.target.result.forEach(book => {
                     const li = document.createElement('li');
                     li.className = `book-item ${book.id === currentBookId ? 'active' : ''}`;
-                    li.innerHTML = `<span>${book.name}</span> <button style="color:red; background:none; border:none; cursor:pointer;">X</button>`;
+                    li.innerHTML = `<span>${book.name}</span><button style="color:red;background:none;border:none;cursor:pointer;">X</button>`;
                     li.onclick = () => openBook(book.id);
                     li.querySelector('button').onclick = (ev) => { ev.stopPropagation(); deleteBook(book.id); };
                     listContainer.appendChild(li);
@@ -376,10 +400,10 @@
         };
 
         const deleteBook = (id) => {
-            db.transaction(["books"], "readwrite").objectStore("books").delete(id).oncomplete = () => {
-                if (currentBookId === id) { 
-                    scrollContainer.innerHTML = ''; 
-                    currentBookId = null; 
+            db.transaction(['books'], 'readwrite').objectStore('books').delete(id).oncomplete = () => {
+                if (currentBookId === id) {
+                    scrollContainer.innerHTML = '';
+                    currentBookId = null;
                     pageControls.style.display = 'none';
                 }
                 loadLibraryList();
@@ -387,78 +411,114 @@
         };
 
         const openBook = (id) => {
-            db.transaction(["books"], "readonly").objectStore("books").get(id).onsuccess = (e) => {
+            db.transaction(['books'], 'readonly').objectStore('books').get(id).onsuccess = (e) => {
                 const book = e.target.result;
                 if (!book) return;
-                currentBookId = book.id;
+                currentBookId   = book.id;
                 savedHighlights = book.highlights || [];
+                scale           = book.scale || 1.0;
+                updateZoomText();
                 loadLibraryList();
-                
+
                 scrollContainer.innerHTML = '';
                 pdfjsLib.getDocument(new Uint8Array(book.data)).promise.then(pdfDoc => {
                     currentPdfDoc = pdfDoc;
-                    
-                    // Update Page Navigator UI
                     pageControls.style.display = 'flex';
                     document.getElementById('total-pages').innerText = pdfDoc.numPages;
-                    
-                    setupContinuousScroll(pdfDoc, book.lastScroll);
+
+                    pdfDoc.getPage(1).then(page => {
+                        const vp = page.getViewport({ scale: 1.0 });
+                        unscaledPageWidth  = vp.width;
+                        unscaledPageHeight = vp.height;
+                        setupContinuousScroll(pdfDoc, book.lastPage || 1);
+                    });
                 });
-                
+
                 document.getElementById('sidebar').classList.remove('open');
             };
         };
 
-        const setupContinuousScroll = (pdfDoc, lastScroll) => {
-            // Lazy load observer
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting && !entry.target.dataset.rendered) {
-                        renderPage(entry.target.dataset.pageNumber, entry.target);
-                    }
-                });
-            }, { root: scrollContainer, rootMargin: '800px 0px' }); 
+        // ── CORE: setupContinuousScroll ─────────────────────────────────────────────
 
-            // Active page tracking observer (Triggers when a page hits the vertical middle of the screen)
-            if (activePageObserver) activePageObserver.disconnect();
-            activePageObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        pageInput.value = entry.target.dataset.pageNumber;
-                    }
-                });
-            }, { root: scrollContainer, rootMargin: '-40% 0px -40% 0px' }); 
+        const setupContinuousScroll = (pdfDoc, targetPage = 1) => {
+            // Disconnect old observers immediately so stale callbacks don't fire
+            if (renderObserver)    { renderObserver.disconnect();    renderObserver    = null; }
+            if (activePageObserver){ activePageObserver.disconnect(); activePageObserver = null; }
 
+            // Clamp
+            targetPage = Math.max(1, Math.min(targetPage, pdfDoc.numPages));
+
+            const pageW = unscaledPageWidth  * scale;
+            const pageH = unscaledPageHeight * scale;
+
+            // Build all placeholder wrappers (cheap — no rendering yet)
+            const wrappers = [];
             for (let i = 1; i <= pdfDoc.numPages; i++) {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'page-wrapper';
-                wrapper.dataset.pageNumber = i;
-                scrollContainer.appendChild(wrapper);
-                observer.observe(wrapper);
-                activePageObserver.observe(wrapper);
+                const w = document.createElement('div');
+                w.className = 'page-wrapper';
+                w.dataset.pageNumber = i;
+                w.style.width  = `${pageW}px`;
+                w.style.height = `${pageH}px`;
+                scrollContainer.appendChild(w);
+                wrappers.push(w);
             }
-            setTimeout(() => scrollContainer.scrollTop = lastScroll, 300);
+
+            // Force the browser to calculate layout NOW (makes scrollHeight valid)
+            void scrollContainer.offsetHeight;
+
+            // Defer into the next macrotask so the browser fully commits this layout
+            // before we set scrollTop or attach observers.
+            setTimeout(() => {
+                // ① Set scroll using pure math — no DOM measurement, always accurate
+                scrollContainer.scrollTop = scrollTopForPage(targetPage);
+                pageInput.value = targetPage;
+
+                // ② Create observers NOW, after scroll is in place.
+                //    Their initial intersection scan will see the correct viewport.
+                renderObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting && !entry.target.dataset.rendered)
+                            renderPage(entry.target.dataset.pageNumber, entry.target);
+                    });
+                }, { root: scrollContainer, rootMargin: '800px 0px' });
+
+                activePageObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting)
+                            pageInput.value = entry.target.dataset.pageNumber;
+                    });
+                }, { root: scrollContainer, rootMargin: '-40% 0px -40% 0px' });
+
+                wrappers.forEach(w => {
+                    renderObserver.observe(w);
+                    activePageObserver.observe(w);
+                });
+            }, 0);
         };
 
+        // ── PAGE RENDER ────────────────────────────────────────────────────────────
+
         const renderPage = (pageNum, wrapper) => {
-            wrapper.dataset.rendered = "true";
+            wrapper.dataset.rendered = 'true';
             currentPdfDoc.getPage(parseInt(pageNum)).then(page => {
-                const viewport = page.getViewport({ scale: scale });
+                const viewport = page.getViewport({ scale });
                 wrapper.classList.add('rendered');
-                wrapper.style.width = `${viewport.width}px`; wrapper.style.height = `${viewport.height}px`;
+                wrapper.style.width  = `${viewport.width}px`;
+                wrapper.style.height = `${viewport.height}px`;
 
                 const canvas = document.createElement('canvas');
-                canvas.width = viewport.width; canvas.height = viewport.height;
+                canvas.width  = viewport.width;
+                canvas.height = viewport.height;
                 wrapper.appendChild(canvas);
 
                 const textLayerDiv = document.createElement('div');
                 textLayerDiv.className = 'textLayer';
                 wrapper.appendChild(textLayerDiv);
 
-                page.render({ canvasContext: canvas.getContext('2d'), viewport: viewport });
-                page.getTextContent().then(textContent => {
-                    pdfjsLib.renderTextLayer({ textContent, container: textLayerDiv, viewport, textDivs: [] });
-                });
+                page.render({ canvasContext: canvas.getContext('2d'), viewport });
+                page.getTextContent().then(tc =>
+                    pdfjsLib.renderTextLayer({ textContent: tc, container: textLayerDiv, viewport, textDivs: [] })
+                );
 
                 renderHighlightsOnPage(parseInt(pageNum), wrapper);
             });
@@ -467,215 +527,177 @@
         const renderHighlightsOnPage = (pageNum, wrapper) => {
             savedHighlights.forEach(group => {
                 group.rects.forEach(rect => {
-                    if (rect.page === pageNum) {
-                        const hlDiv = document.createElement('div');
-                        hlDiv.className = `pdf-highlight highlight-group-${group.id}`;
-                        hlDiv.style.left = `${rect.x}px`;
-                        hlDiv.style.top = `${rect.y}px`;
-                        hlDiv.style.width = `${rect.width}px`;
-                        hlDiv.style.height = `${rect.height}px`;
-                        wrapper.appendChild(hlDiv);
-                    }
+                    if (rect.page !== pageNum) return;
+                    const d = document.createElement('div');
+                    d.className = `pdf-highlight highlight-group-${group.id}`;
+                    d.style.left = `${rect.x}px`; d.style.top    = `${rect.y}px`;
+                    d.style.width= `${rect.width}px`; d.style.height = `${rect.height}px`;
+                    wrapper.appendChild(d);
                 });
             });
         };
 
-        // --- SMART TOOLTIP & SELECTION ---
-        let selectionRects = []; 
+        // ── SELECTION / TOOLTIP ────────────────────────────────────────────────────
+
+        let selectionRects = [];
 
         document.addEventListener('mouseup', async (e) => {
-            if(tooltip.contains(e.target) || deleteTooltip.contains(e.target) || pageControls.contains(e.target)) return;
+            if (tooltip.contains(e.target) || deleteTooltip.contains(e.target) || pageControls.contains(e.target)) return;
 
             const selection = window.getSelection();
             const text = selection.toString().trim();
-
-            if (!text) {
-                tooltip.style.display = 'none';
-                return;
-            }
+            if (!text) { tooltip.style.display = 'none'; return; }
 
             selectionRects = [];
             const pageWrapper = e.target.closest('.page-wrapper');
-            if (!pageWrapper) return; 
+            if (!pageWrapper) return;
 
             const pageNumber = parseInt(pageWrapper.dataset.pageNumber);
-            const range = selection.getRangeAt(0);
-            const textLayer = pageWrapper.querySelector('.textLayer');
-            if(!textLayer) return;
+            const range      = selection.getRangeAt(0);
+            const textLayer  = pageWrapper.querySelector('.textLayer');
+            if (!textLayer) return;
 
             const walker = document.createTreeWalker(textLayer, NodeFilter.SHOW_TEXT);
             let node = walker.nextNode();
             while (node) {
                 if (range.intersectsNode(node)) {
-                    const textRange = document.createRange();
-                    textRange.selectNodeContents(node);
-                    if (node === range.startContainer) textRange.setStart(node, range.startOffset);
-                    if (node === range.endContainer) textRange.setEnd(node, range.endOffset);
-                    
-                    const rect = textRange.getBoundingClientRect();
-                    const wrapperRect = pageWrapper.getBoundingClientRect();
-
+                    const tr = document.createRange();
+                    tr.selectNodeContents(node);
+                    if (node === range.startContainer) tr.setStart(node, range.startOffset);
+                    if (node === range.endContainer)   tr.setEnd(node, range.endOffset);
+                    const rect  = tr.getBoundingClientRect();
+                    const wRect = pageWrapper.getBoundingClientRect();
                     if (rect.width > 0 && rect.height > 0) {
                         selectionRects.push({
                             page: pageNumber,
-                            x: rect.left - wrapperRect.left,
-                            y: rect.top - wrapperRect.top,
-                            width: rect.width,
-                            height: rect.height
+                            x: rect.left - wRect.left, y: rect.top - wRect.top,
+                            width: rect.width, height: rect.height
                         });
                     }
                 }
                 node = walker.nextNode();
             }
 
-            const contentDiv = document.getElementById('dict-content');
-            const actionsDiv = document.getElementById('tooltip-actions');
+            const contentDiv    = document.getElementById('dict-content');
+            const actionsDiv    = document.getElementById('tooltip-actions');
             contentDiv.innerHTML = ''; actionsDiv.innerHTML = '';
 
             const highlightBtn = `<button class="tooltip-btn highlight" onclick="addHighlightOnPage()">Highlight</button>`;
-            const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(text)}`;
+            const searchUrl    = `https://www.google.com/search?q=${encodeURIComponent(text)}`;
             const translateUrl = `https://translate.google.com/?sl=auto&tl=en&text=${encodeURIComponent(text)}&op=translate`;
 
             if (text.includes(' ')) {
                 contentDiv.innerHTML = `<div class="word-title">Phrase Selected</div>`;
                 actionsDiv.innerHTML = `<a href="${searchUrl}" target="_blank" class="tooltip-btn">🔍 Search</a> <a href="${translateUrl}" target="_blank" class="tooltip-btn">🌐 Translate</a> ${highlightBtn}`;
-                showTooltip(tooltip, e.pageX, e.pageY);
+                showTooltip(tooltip, e.clientX, e.clientY);
             } else {
                 const word = text.replace(/[^a-zA-Z]/g, '');
                 if (word.length > 1) {
                     try {
                         const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word.toLowerCase()}`);
-                        if (!res.ok) throw new Error('Not found');
+                        if (!res.ok) throw new Error();
                         const data = await res.json();
                         const phonetic = data[0].phonetics.find(p => p.text)?.text || '';
-                        const def = data[0].meanings[0].definitions[0].definition;
+                        const def      = data[0].meanings[0].definitions[0].definition;
                         contentDiv.innerHTML = `<div class="word-title">${word}</div><div class="word-phonetic">${phonetic}</div><div>${def}</div>`;
-                        // Updated line here: Added the search button alongside the highlight button
                         actionsDiv.innerHTML = `<a href="${searchUrl}" target="_blank" class="tooltip-btn">🔍 Search Web</a> ${highlightBtn}`;
-                    } catch (err) {
+                    } catch {
                         contentDiv.innerHTML = `<div class="word-title">${word}</div><div class="word-phonetic">Definition not found.</div>`;
                         actionsDiv.innerHTML = `<a href="${searchUrl}" target="_blank" class="tooltip-btn">🔍 Search Web</a> ${highlightBtn}`;
                     }
-                    showTooltip(tooltip, e.pageX, e.pageY);
+                    showTooltip(tooltip, e.clientX, e.clientY);
                 }
             }
         });
 
-        // --- CLICK TO DELETE HIGHLIGHT LOGIC ---
+        // ── HIGHLIGHT DELETE ───────────────────────────────────────────────────────
+
         let currentHighlightIdToDelete = null;
 
         document.addEventListener('click', (e) => {
-            if (e.target.closest('#dictionary-tooltip') || e.target.closest('#delete-tooltip') || e.target.closest('#sidebar') || e.target.closest('#top-bar') || e.target.closest('#page-controls')) return;
+            if (e.target.closest('#dictionary-tooltip') || e.target.closest('#delete-tooltip') ||
+                e.target.closest('#sidebar') || e.target.closest('#top-bar') || e.target.closest('#page-controls')) return;
 
-            if (window.getSelection().toString().trim() !== "") {
-                deleteTooltip.style.display = 'none';
-                return;
-            }
+            if (window.getSelection().toString().trim() !== '') { deleteTooltip.style.display = 'none'; return; }
 
             const pageWrapper = e.target.closest('.page-wrapper');
-            if (!pageWrapper) {
-                deleteTooltip.style.display = 'none';
-                return;
-            }
+            if (!pageWrapper) { deleteTooltip.style.display = 'none'; return; }
 
-            const rect = pageWrapper.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const clickY = e.clientY - rect.top;
+            const rect    = pageWrapper.getBoundingClientRect();
+            const clickX  = e.clientX - rect.left;
+            const clickY  = e.clientY - rect.top;
             const pageNum = parseInt(pageWrapper.dataset.pageNumber);
 
-            const clickedGroup = savedHighlights.find(group => 
-                group.rects.some(r => 
-                    r.page === pageNum && 
-                    clickX >= r.x && clickX <= (r.x + r.width) && 
-                    clickY >= r.y && clickY <= (r.y + r.height)
+            const clickedGroup = savedHighlights.find(g =>
+                g.rects.some(r =>
+                    r.page === pageNum &&
+                    clickX >= r.x && clickX <= r.x + r.width &&
+                    clickY >= r.y && clickY <= r.y + r.height
                 )
             );
 
             if (clickedGroup) {
                 currentHighlightIdToDelete = clickedGroup.id;
-                showTooltip(deleteTooltip, e.pageX, e.pageY);
+                showTooltip(deleteTooltip, e.clientX, e.clientY);
             } else {
                 deleteTooltip.style.display = 'none';
-                currentHighlightIdToDelete = null;
+                currentHighlightIdToDelete  = null;
             }
         });
 
         document.addEventListener('mousedown', (e) => {
-            if(!tooltip.contains(e.target)) tooltip.style.display = 'none';
-            if(!deleteTooltip.contains(e.target) && e.target.className !== 'textLayer') deleteTooltip.style.display = 'none';
+            if (!tooltip.contains(e.target)) tooltip.style.display = 'none';
+            if (!deleteTooltip.contains(e.target) && e.target.className !== 'textLayer')
+                deleteTooltip.style.display = 'none';
         });
 
         function showTooltip(el, x, y) {
-            const padding = 20;
             el.style.display = 'block';
-            let left = x; let top = y + 20;
-            if (left + el.offsetWidth > window.innerWidth) left = window.innerWidth - el.offsetWidth - padding;
-            el.style.left = `${left}px`; el.style.top = `${top}px`;
+            let left = x, top = y + 20;
+            if (left + el.offsetWidth  > window.innerWidth)  left = window.innerWidth  - el.offsetWidth  - 20;
+            if (top  + el.offsetHeight > window.innerHeight) top  = y - el.offsetHeight - 10;
+            el.style.left = `${left}px`;
+            el.style.top  = `${top}px`;
         }
 
-        // --- ADD HIGHLIGHT ---
-        window.addHighlightOnPage = () => {
-            if(!currentBookId || selectionRects.length === 0) return;
-            
-            const hlId = Date.now().toString(); 
+        // ── ADD / REMOVE HIGHLIGHT ─────────────────────────────────────────────────
 
+        window.addHighlightOnPage = () => {
+            if (!currentBookId || selectionRects.length === 0) return;
+            const hlId = Date.now().toString();
             selectionRects.forEach(rect => {
-                const pageWrapper = document.querySelector(`.page-wrapper[data-page-number="${rect.page}"]`);
-                if(pageWrapper) {
-                    const hlDiv = document.createElement('div');
-                    hlDiv.className = `pdf-highlight highlight-group-${hlId}`;
-                    hlDiv.style.left = `${rect.x}px`;
-                    hlDiv.style.top = `${rect.y}px`;
-                    hlDiv.style.width = `${rect.width}px`;
-                    hlDiv.style.height = `${rect.height}px`;
-                    pageWrapper.appendChild(hlDiv);
+                const pw = document.querySelector(`.page-wrapper[data-page-number="${rect.page}"]`);
+                if (pw) {
+                    const d = document.createElement('div');
+                    d.className = `pdf-highlight highlight-group-${hlId}`;
+                    d.style.left = `${rect.x}px`; d.style.top    = `${rect.y}px`;
+                    d.style.width= `${rect.width}px`; d.style.height = `${rect.height}px`;
+                    pw.appendChild(d);
                 }
             });
-
             savedHighlights.push({ id: hlId, rects: selectionRects });
-            
-            saveHighlightsToDB();
+            saveBookState();
             tooltip.style.display = 'none';
-            selectionRects = []; 
-            window.getSelection().removeAllRanges(); 
+            selectionRects = [];
+            window.getSelection().removeAllRanges();
         };
 
-        // --- REMOVE HIGHLIGHT ---
         window.removeHighlight = () => {
-            if(!currentBookId || !currentHighlightIdToDelete) return;
-
-            const highlightElements = document.querySelectorAll(`.highlight-group-${currentHighlightIdToDelete}`);
-            highlightElements.forEach(el => el.remove());
-
-            savedHighlights = savedHighlights.filter(group => group.id !== currentHighlightIdToDelete);
-            
-            saveHighlightsToDB();
+            if (!currentBookId || !currentHighlightIdToDelete) return;
+            document.querySelectorAll(`.highlight-group-${currentHighlightIdToDelete}`).forEach(el => el.remove());
+            savedHighlights = savedHighlights.filter(g => g.id !== currentHighlightIdToDelete);
+            saveBookState();
             deleteTooltip.style.display = 'none';
-            currentHighlightIdToDelete = null;
+            currentHighlightIdToDelete  = null;
         };
 
-        function saveHighlightsToDB() {
-            const store = db.transaction(["books"], "readwrite").objectStore("books");
-            store.get(currentBookId).onsuccess = (e) => {
-                let book = e.target.result;
-                book.highlights = savedHighlights;
-                store.put(book);
-            };
-        }
+        // ── SCROLL SAVE ────────────────────────────────────────────────────────────
 
-        // Save scroll
         let scrollTimeout;
         scrollContainer.addEventListener('scroll', () => {
             if (!currentBookId) return;
             clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(() => {
-                const store = db.transaction(["books"], "readwrite").objectStore("books");
-                store.get(currentBookId).onsuccess = (e) => {
-                    let book = e.target.result;
-                    book.lastScroll = scrollContainer.scrollTop;
-                    store.put(book);
-                };
-            }, 500);
+            scrollTimeout = setTimeout(saveBookState, 500);
         });
 
         initDB();
