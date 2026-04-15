@@ -7,6 +7,8 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf_viewer.min.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 
     <style>
         :root {
@@ -207,6 +209,7 @@
         <button id="menu-toggle" class="icon-btn">☰</button>
         <span style="font-weight: bold;">Smart PDF</span>
         <div id="zoom-controls">
+            <button class="icon-btn" id="download-btn" title="Download Highlighted PDF">📥</button>
             <button class="icon-btn" id="zoom-out">➖</button>
             <span id="zoom-level">100%</span>
             <button class="icon-btn" id="zoom-in">➕</button>
@@ -255,9 +258,8 @@
         let unscaledPageWidth  = 800;
         let unscaledPageHeight = 1130;
 
-        // Must match the CSS values on #pdf-scroll-container
-        const SCROLL_GAP = 20;   // gap: 20px
-        const SCROLL_PAD = 20;   // padding: 20px (top)
+        const SCROLL_GAP = 20;   
+        const SCROLL_PAD = 20;   
 
         const scrollContainer  = document.getElementById('pdf-scroll-container');
         const listContainer    = document.getElementById('list-container');
@@ -266,31 +268,13 @@
         const pageControls     = document.getElementById('page-controls');
         const pageInput        = document.getElementById('page-input');
 
-        let renderObserver    = null;
+        let renderObserver     = null;
         let activePageObserver = null;
-
-        // ── PURE-MATH SCROLL HELPERS ────────────────────────────────────────────────
-        //
-        //  Layout of the flex column:
-        //    SCROLL_PAD  ← top padding of container
-        //    [page 1 — height H]
-        //    SCROLL_GAP
-        //    [page 2 — height H]
-        //    SCROLL_GAP  …
-        //
-        //  offsetTop of page N  =  SCROLL_PAD + (N-1)*(H + SCROLL_GAP)
-        //  We want the top of page N at y=SCROLL_PAD inside the viewport, so:
-        //    scrollTop  =  offsetTop − SCROLL_PAD
-        //               =  (N-1) * (H + SCROLL_GAP)
-        //
-        //  No DOM measurement — immune to timing/layout-shift issues.
 
         function scrollTopForPage(pageNum) {
             const H = unscaledPageHeight * scale;
             return (pageNum - 1) * (H + SCROLL_GAP);
         }
-
-        // ── UI ─────────────────────────────────────────────────────────────────────
 
         document.getElementById('menu-toggle').onclick = () =>
             document.getElementById('sidebar').classList.toggle('open');
@@ -298,7 +282,79 @@
         document.getElementById('theme-toggle').onclick = () =>
             document.body.classList.toggle('dark-mode');
 
-        // ── DB ─────────────────────────────────────────────────────────────────────
+        // --- NEW ADDITION: PDF DOWNLOAD LOGIC ---
+        document.getElementById('download-btn').onclick = async () => {
+            if (!currentBookId) {
+                alert("Please open a PDF first.");
+                return;
+            }
+
+            // Temporarily change button to indicate work is happening
+            const btn = document.getElementById('download-btn');
+            btn.innerText = "⏳";
+            
+            try {
+                // 1. Fetch the original PDF array buffer from IndexedDB
+                const store = db.transaction(['books'], 'readonly').objectStore('books');
+                const req = store.get(currentBookId);
+
+                req.onsuccess = async (e) => {
+                    const book = e.target.result;
+                    if (!book) return;
+
+                    // 2. Load it into pdf-lib
+                    const { PDFDocument, rgb } = PDFLib;
+                    const pdfDoc = await PDFDocument.load(book.data);
+
+                    // 3. Iterate over saved highlights and draw them on the pages
+                    savedHighlights.forEach(group => {
+                        group.rects.forEach(rect => {
+                            // pdf-lib pages are 0-indexed, so page 1 is index 0
+                            const page = pdfDoc.getPage(rect.page - 1);
+                            const { height } = page.getSize();
+
+                            // 4. Coordinate Conversion!
+                            // The DOM coordinates are top-left based and scaled.
+                            // pdf-lib coordinates are bottom-left based and unscaled (raw points).
+                            const unscaledX = rect.x / scale;
+                            const unscaledY = rect.y / scale;
+                            const unscaledW = rect.width / scale;
+                            const unscaledH = rect.height / scale;
+
+                            // Calculate the bottom-left Y coordinate for pdf-lib
+                            const pdfY = height - unscaledY - unscaledH;
+
+                            page.drawRectangle({
+                                x: unscaledX,
+                                y: pdfY,
+                                width: unscaledW,
+                                height: unscaledH,
+                                color: rgb(253/255, 224/255, 71/255), // Same yellow as your CSS
+                                opacity: 0.5 // Standard highlight opacity
+                            });
+                        });
+                    });
+
+                    // 5. Serialize to bytes and trigger download
+                    const pdfBytes = await pdfDoc.save();
+                    const blob = new Blob([pdfBytes], { type: "application/pdf" });
+                    const link = document.createElement("a");
+                    link.href = URL.createObjectURL(blob);
+                    // Name the file based on original name
+                    link.download = book.name.replace('.pdf', '') + "_Highlighted.pdf";
+                    
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    btn.innerText = "📥"; // Reset button
+                };
+            } catch (error) {
+                console.error("Error generating PDF:", error);
+                alert("Failed to download PDF.");
+                btn.innerText = "📥";
+            }
+        };
 
         function saveBookState() {
             if (!currentBookId) return;
@@ -324,29 +380,13 @@
             req.onsuccess = (e) => { db = e.target.result; loadLibraryList(); };
         };
 
-        // ── ZOOM ────────────────────────────────────────────────────────────────────
-        //
-        //  THE FIX lives here.  We:
-        //    1. Snapshot the current page number BEFORE touching the DOM.
-        //    2. Rebuild the DOM (placeholder divs only — no rendering yet).
-        //    3. Inside setTimeout(0) — a fresh macrotask, after the browser has
-        //       fully committed the new layout — we:
-        //         a. Set scrollTop using the pure-math formula (no DOM measurement).
-        //         b. THEN attach IntersectionObservers.
-        //
-        //  Why setTimeout(0) instead of requestAnimationFrame?
-        //    rAF fires inside the current paint cycle.  IntersectionObserver
-        //    callbacks can also fire inside the same cycle, before scrollTop has
-        //    been "seen" by the browser.  setTimeout(0) pushes our code into the
-        //    NEXT task queue entry, so the paint is fully committed first.
-
         const updateZoomText = () =>
             document.getElementById('zoom-level').innerText = Math.round(scale * 100) + '%';
 
         const applyZoom = () => {
             updateZoomText();
             if (!currentPdfDoc) return;
-            const targetPage = parseInt(pageInput.value) || 1;   // snapshot BEFORE clear
+            const targetPage = parseInt(pageInput.value) || 1; 
             scrollContainer.innerHTML = '';
             setupContinuousScroll(currentPdfDoc, targetPage);
             saveBookState();
@@ -354,8 +394,6 @@
 
         document.getElementById('zoom-in').onclick  = () => { scale += 0.2; applyZoom(); };
         document.getElementById('zoom-out').onclick = () => { scale = Math.max(0.4, scale - 0.2); applyZoom(); };
-
-        // ── PAGE NAVIGATOR ─────────────────────────────────────────────────────────
 
         pageInput.addEventListener('change', (e) => {
             if (!currentPdfDoc) return;
@@ -365,8 +403,6 @@
             e.target.value = p;
             scrollContainer.scrollTop = scrollTopForPage(p);
         });
-
-        // ── LIBRARY ────────────────────────────────────────────────────────────────
 
         document.getElementById('file-upload').addEventListener('change', function (e) {
             const file = e.target.files[0];
@@ -438,20 +474,15 @@
             };
         };
 
-        // ── CORE: setupContinuousScroll ─────────────────────────────────────────────
-
         const setupContinuousScroll = (pdfDoc, targetPage = 1) => {
-            // Disconnect old observers immediately so stale callbacks don't fire
             if (renderObserver)    { renderObserver.disconnect();    renderObserver    = null; }
             if (activePageObserver){ activePageObserver.disconnect(); activePageObserver = null; }
 
-            // Clamp
             targetPage = Math.max(1, Math.min(targetPage, pdfDoc.numPages));
 
             const pageW = unscaledPageWidth  * scale;
             const pageH = unscaledPageHeight * scale;
 
-            // Build all placeholder wrappers (cheap — no rendering yet)
             const wrappers = [];
             for (let i = 1; i <= pdfDoc.numPages; i++) {
                 const w = document.createElement('div');
@@ -463,18 +494,12 @@
                 wrappers.push(w);
             }
 
-            // Force the browser to calculate layout NOW (makes scrollHeight valid)
             void scrollContainer.offsetHeight;
 
-            // Defer into the next macrotask so the browser fully commits this layout
-            // before we set scrollTop or attach observers.
             setTimeout(() => {
-                // ① Set scroll using pure math — no DOM measurement, always accurate
                 scrollContainer.scrollTop = scrollTopForPage(targetPage);
                 pageInput.value = targetPage;
 
-                // ② Create observers NOW, after scroll is in place.
-                //    Their initial intersection scan will see the correct viewport.
                 renderObserver = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting && !entry.target.dataset.rendered)
@@ -495,8 +520,6 @@
                 });
             }, 0);
         };
-
-        // ── PAGE RENDER ────────────────────────────────────────────────────────────
 
         const renderPage = (pageNum, wrapper) => {
             wrapper.dataset.rendered = 'true';
@@ -536,8 +559,6 @@
                 });
             });
         };
-
-        // ── SELECTION / TOOLTIP ────────────────────────────────────────────────────
 
         let selectionRects = [];
 
@@ -610,8 +631,6 @@
             }
         });
 
-        // ── HIGHLIGHT DELETE ───────────────────────────────────────────────────────
-
         let currentHighlightIdToDelete = null;
 
         document.addEventListener('click', (e) => {
@@ -660,8 +679,6 @@
             el.style.top  = `${top}px`;
         }
 
-        // ── ADD / REMOVE HIGHLIGHT ─────────────────────────────────────────────────
-
         window.addHighlightOnPage = () => {
             if (!currentBookId || selectionRects.length === 0) return;
             const hlId = Date.now().toString();
@@ -690,8 +707,6 @@
             deleteTooltip.style.display = 'none';
             currentHighlightIdToDelete  = null;
         };
-
-        // ── SCROLL SAVE ────────────────────────────────────────────────────────────
 
         let scrollTimeout;
         scrollContainer.addEventListener('scroll', () => {
